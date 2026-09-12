@@ -1,0 +1,10 @@
+{
+  "name": "peek-test-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tiny zero-dependency API service for peek.dev multi-repo preview verification",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
