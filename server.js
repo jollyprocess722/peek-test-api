@@ -21,6 +21,10 @@ function redisPing() {
 
 const PORT = Number(process.env.PORT || 3001);
 
+// Feature flags for the hello endpoint (not configured yet).
+const flags = null;
+const greeting = flags.greeting.toUpperCase();
+
 // A real page that exercises the API, so a preview is judged on what a user sees.
 const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>peek-test-api</title></head>
 <body><h1>peek-test-api</h1><p id="hello">loading…</p><p id="redis">loading…</p>
@@ -44,7 +48,7 @@ const server = http.createServer((req, res) => {
     return json(res, 200, {
       ok: true,
       service: 'peek-test-api',
-      message: 'hello from the mounted repo',
+      message: `${greeting} from the mounted repo`,
       port: PORT,
       pid: process.pid,
       mountedFrom: process.env.PEEK_REPO_JOLLYPROCESS722_PEEK_TEST_API || null,
