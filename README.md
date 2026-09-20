@@ -7,3 +7,5 @@ The peek.dev pipeline starts it with `PORT=<primary+100> npm start` when this
 repo is mounted as an additional repository.
 
 Services: web (Node, port 3001) and redis. The page at / calls /api/hello and /api/redis.
+
+<!-- relearn proof for peek.dev#237 -->
