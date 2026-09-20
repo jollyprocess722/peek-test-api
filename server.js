@@ -21,6 +21,14 @@ function redisPing() {
 
 const PORT = Number(process.env.PORT || 3001);
 
+// A real page that exercises the API, so a preview is judged on what a user sees.
+const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>peek-test-api</title></head>
+<body><h1>peek-test-api</h1><p id="hello">loading…</p><p id="redis">loading…</p>
+<script>
+fetch('/api/hello').then((r) => r.json()).then((b) => { document.getElementById('hello').textContent = b.message; });
+fetch('/api/redis').then((r) => r.json()).then((b) => { document.getElementById('redis').textContent = 'redis: ' + (b.ok ? 'PONG' : 'down'); });
+</script></body></html>`;
+
 function json(res, code, body) {
   const payload = JSON.stringify(body);
   res.writeHead(code, {
@@ -50,7 +58,8 @@ const server = http.createServer((req, res) => {
     return;
   }
   if (req.method === 'GET' && url.pathname === '/') {
-    return json(res, 200, { service: 'peek-test-api', endpoints: ['/api/hello'], port: PORT });
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    return res.end(PAGE);
   }
   return json(res, 404, { error: 'not found', path: url.pathname });
 });
