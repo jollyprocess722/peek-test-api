@@ -5,3 +5,5 @@ previews. Serves `GET /api/hello` (JSON) on `process.env.PORT` (default 3001).
 
 The peek.dev pipeline starts it with `PORT=<primary+100> npm start` when this
 repo is mounted as an additional repository.
+
+Services: web (Node, port 3001) and redis. The page at / calls /api/hello and /api/redis.
