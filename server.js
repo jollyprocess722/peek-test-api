@@ -4,6 +4,20 @@
 // proxies /api to it. The port must come from PORT (the pipeline retargets
 // the command by prepending PORT=<offset>).
 const http = require('http');
+const net = require('net');
+
+// Redis is a hard dependency from this change on: /api/redis PINGs it over RESP.
+const REDIS_URL = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6379');
+
+function redisPing() {
+  return new Promise((resolve, reject) => {
+    const sock = net.connect(Number(REDIS_URL.port || 6379), REDIS_URL.hostname);
+    sock.setTimeout(2000, () => { sock.destroy(); reject(new Error('redis timeout')); });
+    sock.on('error', reject);
+    sock.on('data', (buf) => { sock.end(); resolve(buf.toString().trim()); });
+    sock.write('*1\r\n$4\r\nPING\r\n');
+  });
+}
 
 const PORT = Number(process.env.PORT || 3001);
 
@@ -28,6 +42,12 @@ const server = http.createServer((req, res) => {
       mountedFrom: process.env.PEEK_REPO_JOLLYPROCESS722_PEEK_TEST_API || null,
       ts: new Date().toISOString(),
     });
+  }
+  if (req.method === 'GET' && url.pathname === '/api/redis') {
+    redisPing()
+      .then((reply) => json(res, 200, { ok: reply === '+PONG', reply }))
+      .catch((err) => json(res, 503, { ok: false, error: String(err.message || err) }));
+    return;
   }
   if (req.method === 'GET' && url.pathname === '/') {
     return json(res, 200, { service: 'peek-test-api', endpoints: ['/api/hello'], port: PORT });
