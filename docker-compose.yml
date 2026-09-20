@@ -5,6 +5,7 @@ services:
     environment:
       PORT: "3001"
       REDIS_URL: redis://redis:6379
+      LOG_LEVEL: debug
     ports:
       - "3001:3001"
     depends_on:
